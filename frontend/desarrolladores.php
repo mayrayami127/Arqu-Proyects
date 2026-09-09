@@ -1,22 +1,28 @@
 <?php
 require_once '../conexion.php';
 
+$project_ref = "gaerzvsvjbkzfpznkvye";
+$apiKey      = "sb_publishable_SEYe6-WdhwUF7iXkkGF2Fg_V00qUFrS";
+$baseUrl     = "https://{$project_ref}.supabase.co/rest/v1/";
+
 // Consultar la lista de desarrolladores en Supabase
 $desarrolladores = supabase_get("desarrollador?select=*", $baseUrl, $apiKey);
 $totalDevs = $desarrolladores ? count($desarrolladores) : 0;
+
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevConsult — Desarrolladores</title>
+    <title>Arqué Proyects — Desarrolladores</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-shell">
         <aside class="sidebar">
-            <div class="brand"><span class="brand-mark">&gt;_</span><span>DevConsult</span></div>
+            <div class="brand"><span class="brand-mark">&gt;_</span><span>Arqué Proyects</span></div>
             <nav class="main-nav" aria-label="Navegación principal">
                 <a class="nav-item" href="inicio.php"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>Dashboard</span></a>
                 <a class="nav-item" href="proyectos.php"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5A2.5 2.5 0 0 1 6 4h4l2 2h6a2.5 2.5 0 0 1 2.5 2.5v8A2.5 2.5 0 0 1 18 19H6a2.5 2.5 0 0 1-2.5-2.5v-10Z"/><path d="M4 9h16"/></svg><span>Proyectos</span></a>
@@ -43,7 +49,8 @@ $totalDevs = $desarrolladores ? count($desarrolladores) : 0;
                     <div class="filter-chips">
                         <button class="filter-chip active">Todos <b><?= $totalDevs ?></b></button>
                     </div>
-                    <button class="btn-primary">+ Nuevo Desarrollador</button>
+                    
+                    <button class="btn-primary"><a href="formDesarrollador.php" class="btn-primary">+ Nuevo Desarrollador</a></button>
                 </div>
 
                 <section class="panel">
