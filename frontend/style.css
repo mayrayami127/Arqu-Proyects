@@ -620,8 +620,14 @@ tr:hover td { background: var(--cream); }
 .filter-chip b { font-weight: 700; }
 
 .btn-primary {
-  height: 38px;
-  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  
+  padding: 10px 20px; /* En lugar de height: 38px */
+  line-height: 1;     /* Elimina el margen interno de la fuente */
+  
   border: 0;
   border-radius: 12px;
   background: var(--coral);
@@ -641,7 +647,9 @@ tr:hover td { background: var(--cream); }
   box-shadow: 0 6px 20px rgba(224, 120, 86, .4);
 }
 
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:active { 
+  transform: translateY(0); 
+}
 
 .leader-cell { display: flex; align-items: center; gap: 11px; }
 .leader-cell .leader-avatar { margin-right: 0; }
@@ -656,6 +664,47 @@ tr:hover td { background: var(--cream); }
   font-size: 10px;
   font-weight: 700;
 }
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alinea los botones a la derecha */
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none; /* Oculto por defecto */
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-overlay.active {
+            display: flex; /* Mostrar cuando se active */
+        }
+
+        .modal-container {
+            background: #fff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1050px) {
@@ -708,4 +757,136 @@ tr:hover td { background: var(--cream); }
   .progress-content { gap: 20px; padding-left: 16px; padding-right: 16px; }
   .donut { width: 116px; height: 116px; }
   .donut:after { width: 82px; height: 82px; }
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex !important;
+}
+
+.modal-card {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.form-group input {
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    color: #444;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-actions .btn-primary {
+    border-radius: 20px;
+    padding: 10px 24px;
+}
+/* ==========================================
+   ESTILO EXACTO A LA IMAGEN (BOTONES TERRACOTA)
+   ========================================== */
+
+.actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-action-edit,
+.btn-action-delete {
+    background-color: #e06d53 !important; /* Color terracota de fondo */
+    color: #ffffff !important;           /* Texto blanco */
+    border: none !important;
+    padding: 8px 20px !important;
+    border-radius: 14px !important;       /* Bordes ligeramente redondeados (squircle/soft rounded) */
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(224, 109, 83, 0.35) !important; /* Sombra difuminada bajo el botón */
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Efecto al pasar el cursor (Hover) */
+.btn-action-edit:hover,
+.btn-action-delete:hover {
+    background-color: #d15c42 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(224, 109, 83, 0.45) !important;
+}
+
+.btn-action-edit:active,
+.btn-action-delete:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(224, 109, 83, 0.25) !important;
 }
