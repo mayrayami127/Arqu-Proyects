@@ -35,4 +35,40 @@ function supabase_get($endpoint, $baseUrl, $apiKey) {
     echo "<pre style='background:#f4f4f4; padding:10px;'>" . htmlspecialchars($response) . "</pre>";
     return null;
 }
+
+function supabase_post($endpoint, $baseUrl, $apiKey, $data = []) {
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL            => $baseUrl . $endpoint,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($data),
+        CURLOPT_HTTPHEADER     => [
+            "apikey: {$apiKey}",
+            "Authorization: Bearer {$apiKey}",
+            "Content-Type: application/json",
+            "Prefer: return=representation"
+        ]
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_errno($ch)) {
+        echo '<p style="color:red;">Error de cURL: ' . curl_error($ch) . '</p>';
+        curl_close($ch);
+        return null;
+    }
+
+    curl_close($ch);
+
+    if ($httpCode >= 200 && $httpCode < 300) {
+        return json_decode($response, true);
+    }
+
+    echo "<p style='color:red;'><strong>Error HTTP {$httpCode} desde Supabase:</strong></p>";
+    echo "<pre style='background:#f4f4f4; padding:10px;'>" . htmlspecialchars($response) . "</pre>";
+    return null;
+}
 ?>
