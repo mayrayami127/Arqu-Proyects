@@ -1,7 +1,12 @@
 <?php
-$project_ref = "gaerzvsvjbkzfpznkvye";
-$apiKey = "sb_publishable_SEYe6-WdhwUF7iXkkGF2Fg_V00qUFrS";
-$baseUrl = "https://{$project_ref}.supabase.co/rest/v1/";
+// Cargar credenciales dinámicamente desde las variables de entorno de Render
+$apiKey  = getenv('SUPABASE_KEY') ?: '';
+$baseUrl = getenv('SUPABASE_URL') ?: '';
+
+// Garantizar el sufijo correcto de la API REST de Supabase
+if ($baseUrl && !str_ends_with($baseUrl, '/rest/v1/')) {
+    $baseUrl = rtrim($baseUrl, '/') . '/rest/v1/';
+}
 
 // Función para obtener registros (GET)
 function supabase_get($endpoint, $baseUrl, $apiKey) {

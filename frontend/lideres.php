@@ -1,26 +1,33 @@
 <?php
 require_once '../conexion.php';
 
-$project_ref = "gaerzvsvjbkzfpznkvye";
-$apiKey      = "sb_publishable_SEYe6-WdhwUF7iXkkGF2Fg_V00qUFrS";
-$baseUrl     = "https://{$project_ref}.supabase.co/rest/v1/";
+// Si en conexion.php no definiste estas variables globales, se toman de las variables de entorno:
+$apiKey  = getenv('SUPABASE_KEY') ?: $apiKey;
+$baseUrl = getenv('SUPABASE_URL') ?: $baseUrl;
+
+if (!str_ends_with($baseUrl, '/rest/v1/')) {
+    $baseUrl = rtrim($baseUrl, '/') . '/rest/v1/';
+}
 
 $mensaje = "";
 
 // PROCESAR ACCIONES (CREAR, EDITAR, ELIMINAR)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion =$_POST['accion'] ?? '';
+    $accion = $_POST['accion'] ?? '';
 
     // 1. ELIMINAR LÍDER
     if ($accion === 'eliminar') {
-        $id_lider =$_POST['id_lider'] ?? '';
-        if (!empty($id_lider)) {$url = $baseUrl . "lider?id_lider=eq." . urlencode($id_lider);
+        $id_lider = $_POST['id_lider'] ?? '';
+        if (!empty($id_lider)) {
+            $url = $baseUrl . "lider?id_lider=eq." . urlencode($id_lider);
             $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "apikey: {$apiKey}",
-                "Authorization: Bearer {$apiKey}"
+            curl_setopt_array($ch, [
+                CURLOPT_CUSTOMREQUEST => "DELETE",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER => [
+                    "apikey: {$apiKey}",
+                    "Authorization: Bearer {$apiKey}"
+                ]
             ]);
             $response = curl_exec($ch);
             curl_close($ch);
@@ -39,30 +46,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($data['nombre'])) {
         if ($accion === 'editar') {
             // EDITAR (PATCH)
-            $id_lider = $_POST['id_lider'] ?? '';$url = $baseUrl . "lider?id_lider=eq." . urlencode($id_lider);
+            $id_lider = $_POST['id_lider'] ?? '';
+            $url = $baseUrl . "lider?id_lider=eq." . urlencode($id_lider);
+            
             $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "apikey: {$apiKey}",
-                "Authorization: Bearer {$apiKey}",
-                "Content-Type: application/json",
-                "Prefer: return=minimal"
+            curl_setopt_array($ch, [
+                CURLOPT_CUSTOMREQUEST => "PATCH",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_HTTPHEADER => [
+                    "apikey: {$apiKey}",
+                    "Authorization: Bearer {$apiKey}",
+                    "Content-Type: application/json",
+                    "Prefer: return=minimal"
+                ]
             ]);
+            
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if ($httpCode >= 200 &&$httpCode < 300) {
+            if ($httpCode >= 200 && $httpCode < 300) {
                 header("Location: lideres.php");
                 exit;
             } else {
-                $mensaje = "Error al editar el líder.";
+                $mensaje = "Error al editar el líder. (HTTP Code: {$httpCode})";
             }
         } else {
             // CREAR
-            $resultado = supabase_post('lider',$data, $baseUrl,$apiKey);
+            $resultado = supabase_post('lider', $data, $baseUrl, $apiKey);
             if ($resultado) {
                 header("Location: lideres.php");
                 exit;
@@ -75,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Consultar líderes
 $endpoint = "lider?select=*,proyecto(*)";
-$lideres  = supabase_get($endpoint,$baseUrl, $apiKey);$totalLideres = is_array($lideres) ? count($lideres) : 0;
+$lideres  = supabase_get($endpoint, $baseUrl, $apiKey);
+$totalLideres = is_array($lideres) ? count($lideres) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
